@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y ffmpeg
 RUN pip install "uvicorn[standard]"
 RUN pip install fastapi
 
+RUN pip install redis
+
 COPY requirements.txt /app
 RUN pip install --no-cache-dir -r requirements.txt
 

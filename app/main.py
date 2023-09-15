@@ -1,6 +1,7 @@
 import os
 
 from typing import Union
+from celery_tasks.tasks import some_task
 
 from fastapi import FastAPI
 
@@ -13,16 +14,13 @@ app = FastAPI()
 
 celery = Celery(__name__)
 
-celery.conf.broker_url = os.getenv("CELERY_BROKER_URL", "pyamqp://guest@rabbitmq//")
-celery.conf.result_backend = os.getenv("CELERY_RESULT_BACKEND", "rpc://rabbitmq")
+celery.conf.broker_url = os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0")
+celery.conf.result_backend = os.getenv("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
+celery.conf.broker_connection_retry_on_startup = True
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
-@celery.task
-def some_task():
-    return "This task be done"
 
 @app.get("/glean")
 def do_glean():

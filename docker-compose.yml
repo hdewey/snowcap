@@ -7,6 +7,12 @@ services:
       - "15672:15672"
     networks:
       - snowcap_network
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    networks:
+      - snowcap_network
   app: # uvicorn fastapi python app 
     build: .
     volumes:
@@ -17,17 +23,19 @@ services:
       - ./app/.env
     depends_on:
       - rabbitmq
+      - redis
     networks:
       - snowcap_network
   worker: # Celery worker
     build: .
-    command: celery -A main.celery worker
+    command: celery -A celery_tasks.tasks worker --loglevel=info
     env_file:
       - ./app/.env
     volumes:
       - ./app:/app
     depends_on:
       - rabbitmq
+      - redis
     networks:
       - snowcap_network
   nginx:
