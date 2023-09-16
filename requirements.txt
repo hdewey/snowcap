@@ -10,3 +10,4 @@ pydub==0.25.1
 celery==5.3.4
 fastapi==0.103.1
 uvicorn[standard]==0.23.2
+python-multipart==0.0.6
