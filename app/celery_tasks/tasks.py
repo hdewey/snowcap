@@ -1,6 +1,9 @@
 import os
 import time
 
+from fn.glean import glean
+from fn.scribe import scribe
+
 from celery import Celery
 
 celery = Celery(__name__)
@@ -19,12 +22,17 @@ def some_task(self):
     time.sleep(20)
     return True
 
-# generate task
 @celery.task(bind=True)
-def generate_task(self):
+def scribe_task(self, filename, property_id):
+    result = scribe(filename, property_id)
+    return result
 
-    # run a glean()
+# # fabricate task
+# @celery.task(bind=True)
+# def fabricate_task(self):
 
-    # use updated property details to run fabricate()
-    time.sleep(10)
-    return True
+#     # run a glean()
+
+#     # use updated property details to run fabricate()
+#     time.sleep(10)
+#     return True
