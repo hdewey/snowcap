@@ -10,13 +10,15 @@ from pydantic import BaseModel
 from celery import Celery
 from celery.result import AsyncResult 
 
+from starlette.datastructures import ByteSize
+
 from fn.glean import glean
 from fn.scribe import scribe
 from models import Recording, get_recording
 
 from lib.audio_ops import AudioOperations
 
-app = FastAPI()
+app = FastAPI(client_max_size=ByteSize("100mb"))
 
 app.add_middleware(
     CORSMiddleware,
