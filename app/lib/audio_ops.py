@@ -26,11 +26,26 @@ class AudioOperations:
                 contents = file.file.read()
                 buffer.write(contents)
             
+            # Convert MP4 files to WAV
+            if file_extension == "mp4":
+                file_path = self.convert_to_wav(file_path)
+            
             return file_path
         else:
             raise ValueError("Invalid file type or no file provided.")
         
+    def convert_to_wav(self, file_path):
+        """Converts the given file to WAV format."""
+        audio = AudioSegment.from_file(file_path, format="mp4")  # load mp4
+        wav_file_path = file_path.rsplit('.', 1)[0] + ".wav"
+        audio.export(wav_file_path, format="wav")  # export as WAV
+        
+        # Optional: Remove the original .mp4 file after conversion
+        os.remove(file_path)
+        
+        return wav_file_path
+        
     def remove_file(self, filepath):
         if os.path.exists(filepath):
-            # os.remove(filepath)
+            os.remove(filepath)
             return
