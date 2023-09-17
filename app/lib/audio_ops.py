@@ -14,6 +14,7 @@ class AudioOperations:
 
     def save_file(self, file: UploadFile):
         file_extension = file.filename.split('.')[-1].lower()
+        print(f"Saving a {file_extension} file.")
         if file and self.allowed_file(file_extension):
             generated_filename = f"{uuid.uuid4()}.{file_extension}"
             if not os.path.exists(self.UPLOAD_FOLDER):
