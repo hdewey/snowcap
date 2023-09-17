@@ -18,7 +18,7 @@ from models import Recording, get_recording
 
 from lib.audio_ops import AudioOperations
 
-app = FastAPI(client_max_size=ByteSize("100mb"))
+app = FastAPI(client_max_size=100_000_000)
 
 app.add_middleware(
     CORSMiddleware,
