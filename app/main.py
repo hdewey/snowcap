@@ -10,8 +10,6 @@ from pydantic import BaseModel
 from celery import Celery
 from celery.result import AsyncResult 
 
-from starlette.datastructures import ByteSize
-
 from fn.glean import glean
 from fn.scribe import scribe
 from models import Recording, get_recording
