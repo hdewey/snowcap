@@ -34,10 +34,6 @@ celery.conf.broker_connection_retry_on_startup = True # bc I don't want to run w
 
 audio_ops = AudioOperations()
 
-# @app.get("/")
-# def read_root():
-#     return {"Hello": "World"}
-
 @app.post("/scribe")
 def do_scribe(data: Recording = Depends(get_recording)):
     if data.file.filename == '':
