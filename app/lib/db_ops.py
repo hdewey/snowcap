@@ -28,7 +28,21 @@ class DBOperations:
         except Exception as e:
             print(f"Error while fetching data from {collection}: {e}")
             return None
-
+        
+    def find_many(self, collection, query={}, projection=None, limit=None, sort=None):
+        if not query:
+            raise ValueError("Must use with a query")
+        try:
+            cursor = self.db[collection].find(query, projection)
+            if sort:
+                cursor = cursor.sort(sort)
+            if limit is not None:
+                cursor = cursor.limit(limit)
+            return list(cursor)
+        except Exception as e:
+            print(f"Error while fetching data from {collection}: {e}")
+            return None
+        
     def update_one(self, collection, filter, update):
         try:
             return self.db[collection].update_one(filter, update)

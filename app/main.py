@@ -1,9 +1,10 @@
 import os
 
 from typing import Union
-from celery_tasks.tasks import some_task, scribe_task
+from celery_tasks.tasks import some_task, scribe_task, glean_task, fabricate_task
 
 from fastapi import FastAPI, File, UploadFile, Form, Depends
+from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from celery import Celery
@@ -17,6 +18,14 @@ from lib.audio_ops import AudioOperations
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"], 
+)
+
 celery = Celery(__name__)
 
 celery.conf.broker_url = os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0")
@@ -25,27 +34,38 @@ celery.conf.broker_connection_retry_on_startup = True # bc I don't want to run w
 
 audio_ops = AudioOperations()
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-@app.get("/glean")
-def do_glean():
-    result = glean()
-    return result
+# @app.get("/")
+# def read_root():
+#     return {"Hello": "World"}
 
 @app.post("/scribe")
 def do_scribe(data: Recording = Depends(get_recording)):
     if data.file.filename == '':
         return 'No selected file', 400
-    
+
     if data.property_id == '':
         return 'No property_id', 400
-     
+
     tmp_file_path = audio_ops.save_file(data.file)
 
     task = scribe_task.apply_async(args=[tmp_file_path, data.property_id])
-    return {"message": "task queued", "type": "transcription", "property_id": data.property_id, "task_id": task.id}
+    return {"message": "task queued", "type": "scribe_task", "property_id": data.property_id, "task_id": task.id}
+
+@app.get("/glean")
+def do_glean(property_id):
+    if property_id == '':
+        return 'No property id', 400
+    
+    task = glean_task.apply_async(args=[property_id])
+    return {"message": "task queued", "type": "glean_task", "task_id": task.id}
+
+@app.get("/fabricate")
+def do_fabricate(property_id):
+    if property_id == '':
+        return 'No property id', 400
+    
+    task = fabricate_task.apply_async(args=[property_id])
+    return {"message": "task queued", "type": "fabricate_task", "task_id": task.id}
 
 @app.get("/start_task")
 def start_task():

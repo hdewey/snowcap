@@ -21,7 +21,7 @@ services:
       - redis
     networks:
       - snowcap_network
-  worker: # Celery worker
+  worker: # celery worker
     build: .
     command: celery -A celery_tasks.tasks worker --loglevel=info
     env_file:

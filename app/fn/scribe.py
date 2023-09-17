@@ -2,6 +2,7 @@ import json
 import openai
 import os
 import time
+from bson.objectid import ObjectId
 
 from lib.audio_ops import AudioOperations
 from lib.db_ops import DBOperations
@@ -29,10 +30,13 @@ def scribe(filepath: str, property_id):
         data = {
             'property_id': property_id,
             'transcription': transcription,
-            'uploadTime': int(time.time()),
+            'upload_time': int(time.time()),
         }
 
-        db_ops.insert_one('transcripts', data.copy())
+        data_copy = data.copy()
+        data_copy['property_id'] = ObjectId(property_id)
+
+        db_ops.insert_one('transcripts', data_copy)
 
         response = data
     else:
