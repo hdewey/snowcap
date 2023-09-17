@@ -25,10 +25,16 @@ class AudioOperations:
             with open(file_path, "wb") as buffer:
                 contents = file.file.read()
                 buffer.write(contents)
+
+            print(f"Before Changing File Type:")
+            print(self.get_audio_info(file_path))
             
             # Convert MP4 files to WAV
             if file_extension == "mp4":
                 file_path = self.convert_to_wav(file_path)
+
+                print(f"After Changing File Type:")
+                print(self.get_audio_info(file_path))
             
             return file_path
         else:
@@ -49,3 +55,21 @@ class AudioOperations:
         if os.path.exists(filepath):
             os.remove(filepath)
             return
+    def get_audio_info(self, file_path):
+        audio = AudioSegment.from_file(file_path)
+        
+        file_size = os.path.getsize(file_path)
+        
+        info = {
+            "length_ms": len(audio),  # Length in milliseconds
+            "length_seconds": len(audio) / 1000,  # Length in seconds
+            "channels": audio.channels,  # Number of channels
+            "frame_rate": audio.frame_rate,  # Frame rate
+            "frame_width": audio.frame_width,  # Frame width in bytes
+            "sample_width": audio.sample_width * 8,  # Sample width in bits
+            "file_size_bytes": file_size,  # Size in bytes
+            "file_size_kb": file_size / 1024,  # Size in kilobytes
+            "file_size_mb": file_size / (1024 * 1024)  # Size in megabytes
+        }
+
+        return info
