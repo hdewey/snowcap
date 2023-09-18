@@ -21,6 +21,7 @@ services:
       - redis
     networks:
       - snowcap_network
+    restart: on-failure
   worker: # celery worker
     build: .
     command: celery -A celery_tasks.tasks worker --loglevel=info
@@ -33,6 +34,7 @@ services:
       - redis
     networks:
       - snowcap_network
+    restart: on-failure
   nginx:
     image: nginx:latest
     volumes:
