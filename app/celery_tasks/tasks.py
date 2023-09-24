@@ -1,11 +1,11 @@
 import os
 import time
 
-from typing import Union
-
 from fn.glean import glean
 from fn.scribe import scribe
+
 from fn.fabricate import fabricate
+from fn.fabricate_w_prompt import fabricate_w_prompt
 
 from celery import Celery
 
@@ -38,4 +38,9 @@ def scribe_task(self, filename, property_id):
 @celery.task(bind=True)
 def fabricate_task(self, property_id):
     result = fabricate(property_id)
+    return result
+
+@celery.task(bind=True)
+def fabricate_w_prompt_task(self, property_id):
+    result = fabricate_w_prompt(property_id)
     return result

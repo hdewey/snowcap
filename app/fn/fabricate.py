@@ -7,13 +7,16 @@ from lib.openai_ops import OpenAIOperations
 
 from fn.glean import glean
 
-db_ops = DBOperations()
 
 def get_latest_data(collection, property_id):
+    db_ops = DBOperations()
+
     data_list = db_ops.find_many(collection, {"property_id":  ObjectId(property_id)}, sort=[("upload_time", -1)], limit=1)
     return data_list[0] if data_list else None
 
 def fabricate(property_id):
+
+    db_ops = DBOperations()
 
     cached_property_details = get_latest_data("transcript_scan", property_id)
     last_recording = get_latest_data("recordings", property_id)
@@ -33,7 +36,7 @@ def fabricate(property_id):
     data = {
         "property_id": property_id,
         "upload_time": int(time.time()), 
-        "descriptions": fabricate_result
+        "descriptions": fabricate_result,
     }
 
     data_copy = data.copy()
