@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y ffmpeg
 
 RUN pip install "uvicorn[standard]"
 RUN pip install fastapi
-
+RUN pip install pyjwt
 RUN pip install redis
 
 COPY requirements.txt /app

@@ -9,13 +9,9 @@ from fastapi import FastAPI, HTTPException, Depends, Request
 
 from starlette.middleware.cors import CORSMiddleware
 
-from pydantic import BaseModel
-
 from celery import Celery
 from celery.result import AsyncResult 
 
-from fn.glean import glean
-from fn.scribe import scribe
 from models import Recording, get_recording
 
 from lib.audio_ops import AudioOperations
