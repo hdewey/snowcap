@@ -28,7 +28,7 @@ def fabricate_w_prompt(property_id):
 
     recordings = db_ops.find_many("transcripts", {"property_id": obj_id})
 
-    prompt_fabricate = deep_serialize(db_ops.find_one("prompts", {"name": "fabricate"}))
+    prompt_fabricate = db_ops.find_one('properties', { "_id": ObjectId(property_id)}).get('prompt')
     prompt_format = openai_ops.MAIN_PROMPTS.get('fabrication_format', '')
 
     formatted_transcripts = []
@@ -40,7 +40,7 @@ def fabricate_w_prompt(property_id):
         response = {"error": "No recordings found"}
         return response
 
-    full_prompt = f"{prompt_fabricate.get('value')} {prompt_format} {json.dumps(formatted_transcripts, default=lambda o: str(o) if isinstance(o, ObjectId) else o)}"
+    full_prompt = f"{prompt_fabricate} {prompt_format} {json.dumps(formatted_transcripts, default=lambda o: str(o) if isinstance(o, ObjectId) else o)}"
 
     fabricate_result = openai_ops.gpt4_query(full_prompt)
 
