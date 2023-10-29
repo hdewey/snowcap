@@ -6,7 +6,7 @@ import openai
 import time
 
 MAX_RETRIES = 3
-RETRY_DELAY = 2 
+RETRY_DELAY = 5
 
 class OpenAIOperations:
     def __init__(self):

@@ -6,7 +6,7 @@ import tempfile
 from fastapi import UploadFile
 
 class AudioOperations:
-    UPLOAD_FOLDER = "/tmp/recordings"  # Shared across instances
+    UPLOAD_FOLDER = "/tmp/recordings"  # shared file system
     ALLOWED_EXTENSIONS = {'mp3', 'mp4', 'mpeg', 'mpga', 'm4a', 'wav', 'webm'}
 
     def allowed_file(self, file_extension):
@@ -29,7 +29,6 @@ class AudioOperations:
             print(f"Before Changing File Type:")
             print(self.get_audio_info(file_path))
             
-            # Convert MP4 files to WAV
             if file_extension == "mp4":
                 file_path = self.convert_to_wav(file_path)
 
@@ -42,11 +41,10 @@ class AudioOperations:
         
     def convert_to_wav(self, file_path):
         """Converts the given file to WAV format."""
-        audio = AudioSegment.from_file(file_path, format="mp4")  # load mp4
+        audio = AudioSegment.from_file(file_path, format="mp4")
         wav_file_path = file_path.rsplit('.', 1)[0] + ".wav"
-        audio.export(wav_file_path, format="wav")  # export as WAV
+        audio.export(wav_file_path, format="wav")
         
-        # Optional: Remove the original .mp4 file after conversion
         os.remove(file_path)
         
         return wav_file_path
@@ -61,15 +59,15 @@ class AudioOperations:
         file_size = os.path.getsize(file_path)
         
         info = {
-            "length_ms": len(audio),  # Length in milliseconds
-            "length_seconds": len(audio) / 1000,  # Length in seconds
-            "channels": audio.channels,  # Number of channels
-            "frame_rate": audio.frame_rate,  # Frame rate
-            "frame_width": audio.frame_width,  # Frame width in bytes
-            "sample_width": audio.sample_width * 8,  # Sample width in bits
-            "file_size_bytes": file_size,  # Size in bytes
-            "file_size_kb": file_size / 1024,  # Size in kilobytes
-            "file_size_mb": file_size / (1024 * 1024)  # Size in megabytes
+            "length_ms": len(audio),
+            "length_seconds": len(audio) / 1000, 
+            "channels": audio.channels,  # int
+            "frame_rate": audio.frame_rate,
+            "frame_width": audio.frame_width,  # bytes
+            "sample_width": audio.sample_width * 8,  # bits
+            "file_size_bytes": file_size,
+            "file_size_kb": file_size / 1024, 
+            "file_size_mb": file_size / (1024 * 1024)
         }
 
         return info

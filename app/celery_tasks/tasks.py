@@ -7,6 +7,9 @@ from fn.scribe import scribe
 from fn.fabricate import fabricate
 from fn.fabricate_w_prompt import fabricate_w_prompt
 
+from fn.quick_gen import quick_gen
+from fn.quick_gen_scribe import quick_gen_scribe
+
 from celery import Celery
 
 celery = Celery(__name__)
@@ -14,9 +17,6 @@ celery = Celery(__name__)
 celery.conf.broker_url = os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0")
 celery.conf.result_backend = os.getenv("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
 celery.conf.broker_connection_retry_on_startup = True
-
-# Our workflows will be implemented through tasks
-# they just run one or multiple named function
 
 # sample task
 @celery.task(bind=True)
@@ -43,4 +43,14 @@ def fabricate_task(self, property_id):
 @celery.task(bind=True)
 def fabricate_w_prompt_task(self, property_id):
     result = fabricate_w_prompt(property_id)
+    return result
+
+@celery.task(bind=True)
+def quick_gen_task(self, description, property_id):
+    result = quick_gen(description, property_id)
+    return result
+
+@celery.task(bind=True)
+def quick_gen_scribe_task(self, filename, property_id):
+    result = quick_gen_scribe(filename, property_id)
     return result

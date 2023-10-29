@@ -6,7 +6,7 @@ class DBOperations:
     def __init__(self):
         uri = os.getenv('MONGODB_SECRET')
         self.client = MongoClient(uri, server_api=ServerApi('1'))
-        self.db = self.client['horizon_v2']
+        self.db = self.client['horizon_v3']
 
     def ping(self):
         try:
