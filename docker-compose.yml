@@ -2,7 +2,7 @@ version: '3'
 
 volumes:
   shared_tmp:
-  snowcap_ssl_certs:
+  ssl_certs:
 
 services:
   redis:
@@ -44,7 +44,7 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      - snowcap_ssl_certs:/etc/letsencrypt
+      - ssl_certs:/etc/letsencrypt
       - ./nginx/default.prod.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
