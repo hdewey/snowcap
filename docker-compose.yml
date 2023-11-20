@@ -2,7 +2,7 @@ version: '3'
 
 volumes:
   shared_tmp:
-  ssl_certs:
+  snowcap_ssl_certs:
 
 services:
   redis:
