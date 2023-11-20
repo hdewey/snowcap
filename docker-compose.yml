@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
   shared_tmp:
+  ssl_certs:
 
 services:
   redis:
@@ -52,7 +53,7 @@ services:
       - app
     networks:
       - snowcap_network
-      
+
 networks:
   snowcap_network:
     driver: bridge
